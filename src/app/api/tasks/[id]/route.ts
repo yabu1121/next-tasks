@@ -1,24 +1,31 @@
 import { TaskModel } from "@/models/task";
 import { connectDb } from "@/utils/database";
 import { NextRequest, NextResponse } from "next/server";
+import { Response } from "next/server";
 
 export const GET = async (
-  _:NextRequest, 
-  { params } : { params: { id: string } }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ): Promise<Response> => {
-  try{
+
+  const params = await context.params;
+  const taskId = params.id;
+
+  try {
     await connectDb();
-    const task = await TaskModel.findById(params.id);
-    if(!task){
+    const task = await TaskModel.findById(taskId);
+
+    if (!task) {
       return NextResponse.json(
-        {message: 'not exist task '},
-        {status: 404},
+        { message: 'not exist task ' },
+        { status: 404 },
       )
     }
-    return NextResponse.json({message: 'get task', task})
-  }catch(error){
-    console.log(error);
-    return NextResponse.json({ message: 'failed get task' },{ status : 500 });
+
+    return NextResponse.json({ message: 'get task', task })
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ message: 'failed get task' }, { status: 500 });
   }
 };
 
