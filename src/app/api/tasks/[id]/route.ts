@@ -1,12 +1,11 @@
 import { TaskModel } from "@/models/task";
 import { connectDb } from "@/utils/database";
 import { NextRequest, NextResponse } from "next/server";
-import { Response } from "next/server";
 
 export const GET = async (
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
-): Promise<Response> => {
+) => {
 
   const params = await context.params;
   const taskId = params.id;
